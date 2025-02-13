@@ -10,6 +10,8 @@ public class PlayerMovement : MonoBehaviour
 
     public float mouseSensitivity = 1f;
 
+    public AnimationTest animationTest;
+
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -27,10 +29,20 @@ public class PlayerMovement : MonoBehaviour
         float moveX = Input.GetAxis("Horizontal");
         float moveY = Input.GetAxis("Vertical");
 
+
         //Debug.Log(moveX + "," + moveY);
 
         Vector3 direction = new Vector3(moveX, 0, moveY) * speed * Time.deltaTime;
         transform.Translate(direction);
+
+        if(moveY != 0)
+        {
+            SetAnimBool("IsWalking", true);
+        }
+        else
+        {
+            SetAnimBool("IsWalking", false);
+        }
     }
 
     private void LookAround()
@@ -52,5 +64,10 @@ public class PlayerMovement : MonoBehaviour
 
         mainCamera.transform.Rotate(Vector3.right, -xRotation);
 
+    }
+
+    public void SetAnimBool(string name, bool condition)
+    {
+        animationTest.SetAnimBool(name, condition);
     }
 }

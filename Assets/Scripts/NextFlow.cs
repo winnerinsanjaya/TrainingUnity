@@ -3,8 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class LightSwitch : MonoBehaviour
+public class NextFlow : MonoBehaviour
 {
+    public Flow flowState;
+
+    public GameManager gameManager;
+
+    public bool FlowChecker()
+    {
+        return gameManager.currentFlow == flowState; 
+    }
+
     public UnityEvent OnClick;
 
     public bool canClickTwoTimes;
@@ -15,22 +24,17 @@ public class LightSwitch : MonoBehaviour
 
     public void OnMouseDown()
     {
-        if (!canClick)
+        if (!canClick || !FlowChecker())
         {
             return;
         }
 
-        if (canClickTwoTimes)
+        if (!alreadyClicked)
         {
-            OnClick.Invoke();
-        }
-        else
-        {
-            if (!alreadyClicked)
-            {
-                alreadyClicked = true;
-                OnClick.Invoke();
-            }
+            alreadyClicked = true;
+            gameManager.ToNextFlow();
+
+            Destroy(transform.parent.gameObject);
         }
     }
 

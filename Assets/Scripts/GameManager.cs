@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-
+using TMPro;
+using UnityEngine.SceneManagement;
 
 public enum Flow {Flow1, Flow2, Flow3, Flow4, Flow5}
 
@@ -13,9 +14,19 @@ public class GameManager : MonoBehaviour
 
     public List<GameObject> onLamp;
 
+    public TextContainer textContainer;
+
+    public TMP_Text textFlow;
+
+    public GameObject winScreen;
 
     public void AddLampToList(GameObject lamp, bool cond)
     {
+        if(currentFlow != Flow.Flow1)
+        {
+            return;
+        }
+
         if (cond)
         {
             onLamp.Add(lamp);
@@ -51,11 +62,41 @@ public class GameManager : MonoBehaviour
         {
             Flow nextFlow = (Flow)enumValues.GetValue(nextIndex); //Ambil data untuk next flow dari next Index;
             currentFlow = nextFlow;
+            ShowText();
         }
 
         if(nextIndex >= enumValues.Length) // jika next index sudah sama kaya jumlah Array
         {
+            textFlow.gameObject.SetActive(false);
+            winScreen.gameObject.SetActive(true);
+
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+
             Debug.Log("Game is Finished");
         }
+    }
+
+
+    public void ShowText()
+    {
+        Array enumValues = Enum.GetValues(typeof(Flow)); //Buat Array berdasarkan enum Flow
+
+        int currentIndex = Array.IndexOf(enumValues, currentFlow);//mencari index currentFlow di enumValues
+
+        string text = textContainer.GetText(currentIndex);
+
+        Debug.Log(text);
+        textFlow.text = text;
+    }
+
+    private void Start()
+    {
+        ShowText();
+    }
+
+    public void GoToMainMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
     }
 }

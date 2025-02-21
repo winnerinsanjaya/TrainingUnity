@@ -9,6 +9,7 @@ public class AddValueButton : MonoBehaviour
 
     public void AddButton(int amount)
     {
+        AudioPlayer.instance.PlaySFX(0);
         textChanger.AddValue(amount);
     }
 }

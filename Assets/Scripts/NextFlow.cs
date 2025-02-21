@@ -34,6 +34,7 @@ public class NextFlow : MonoBehaviour
             alreadyClicked = true;
             gameManager.ToNextFlow();
 
+            AudioPlayer.instance.PlaySFX(1);
             Destroy(transform.parent.gameObject);
         }
     }

@@ -22,6 +22,7 @@ public class LightSwitch : MonoBehaviour
 
         if (canClickTwoTimes)
         {
+            AudioPlayer.instance.PlaySFX(2);
             OnClick.Invoke();
         }
         else
@@ -29,6 +30,8 @@ public class LightSwitch : MonoBehaviour
             if (!alreadyClicked)
             {
                 alreadyClicked = true;
+
+                AudioPlayer.instance.PlaySFX(2);
                 OnClick.Invoke();
             }
         }

@@ -66,6 +66,7 @@ public class TriggerTest : MonoBehaviour
     {
         if (isPlayerOnArea)
         {
+            AudioPlayer.instance.PlaySFX(2);
             triggerEvent.Invoke();
         }
     }

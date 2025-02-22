@@ -56,7 +56,7 @@ public class TriggerTest : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (OVRInput.GetDown(OVRInput.Button.One))
         {
             OnOffButton();
         }

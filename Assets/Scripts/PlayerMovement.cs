@@ -6,8 +6,6 @@ public class PlayerMovement : MonoBehaviour
 {
     public float speed = 1f;
 
-    public Camera mainCamera;
-
     public float mouseSensitivity = 1f;
 
     public AnimationTest animationTest;
@@ -21,22 +19,33 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         Move();
-        LookAround();
     }
 
     private void Move()
     {
-        float moveX = Input.GetAxis("Horizontal");
-        float moveY = Input.GetAxis("Vertical");
+        Vector2 thumbAxis = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick);
 
-
-        //Debug.Log(moveX + "," + moveY);
-
-        Vector3 direction = new Vector3(moveX, 0, moveY) * speed * Time.deltaTime;
-        transform.Translate(direction);
-
-        if(moveY != 0)
+        if (thumbAxis.magnitude > 0.1f) // Supaya tidak gerak saat stick lepas
         {
+            Transform head = Camera.main.transform; // Ambil arah kepala dari kamera utama (CenterEyeAnchor)
+            Vector3 forward = head.forward;
+            Vector3 right = head.right;
+
+            // Hapus sumbu Y supaya tidak naik-turun
+            forward.y = 0;
+            right.y = 0;
+
+            // Normalisasi agar gerakan tidak lebih cepat diagonal
+            forward.Normalize();
+            right.Normalize();
+
+            // Tentukan arah gerakan berdasarkan input stick
+            Vector3 moveDirection = forward * thumbAxis.y + right * thumbAxis.x;
+            moveDirection *= speed * Time.deltaTime;
+
+            transform.Translate(moveDirection, Space.World);
+
+            // Atur animasi berjalan
             SetAnimBool("IsWalking", true);
         }
         else
@@ -45,29 +54,13 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void LookAround()
-    {
-        float moveX = Input.GetAxis("Mouse X");
-        float moveY = Input.GetAxis("Mouse Y");
 
-        //Debug.Log(moveX + "," + moveY);
-
-        float yRotation = moveX * mouseSensitivity * Time.deltaTime;
-        float xRotation = moveY * mouseSensitivity * Time.deltaTime * 2f;
-
-        xRotation = Mathf.Clamp(xRotation, -45f, 45f);
-
-
-        transform.Rotate(Vector3.up, yRotation);
-
-
-
-        mainCamera.transform.Rotate(Vector3.right, -xRotation);
-
-    }
 
     public void SetAnimBool(string name, bool condition)
     {
         animationTest.SetAnimBool(name, condition);
     }
+
+
+
 }
